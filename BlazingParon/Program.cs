@@ -3,13 +3,13 @@ using BlazingParon.Data;
 using BlazingParon.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("InventoryManagementSystemDB") ?? "Data Source=Paron.db";
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSqlite<InventoryManagementSystemDB>(connectionString);
+builder.Services.AddSqlite<InventoryManagementSystemDB>("Data Source=Paron.db");
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 
@@ -29,4 +29,15 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
+
+// Initialize the database
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = scopeFactory.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<InventoryManagementSystemDB>();
+    if (db.Database.EnsureCreated())
+    {
+        SeedData.Initialize(db);
+    }
+}
 app.Run();

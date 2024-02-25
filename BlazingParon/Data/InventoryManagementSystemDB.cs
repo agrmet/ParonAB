@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BlazingParon.Models;
 namespace BlazingParon.Data
 {
-    class InventoryManagementSystemDB : DbContext
+    public class InventoryManagementSystemDB : DbContext
     {
         public InventoryManagementSystemDB(DbContextOptions<InventoryManagementSystemDB> options) : base(options) { }
         public DbSet<Product> Products { get; set; } = null!;
