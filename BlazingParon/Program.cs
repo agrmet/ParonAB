@@ -1,12 +1,17 @@
 using BlazingParon.Components;
+using BlazingParon.Data;
+using BlazingParon.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("InventoryManagementSystemDB") ?? "Data Source=Paron.db";
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddSqlite<InventoryManagementSystemDB>(connectionString);
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
