@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BlazingParon.Controllers
 {
 
-    [Route("products")]
+    [Route("productsAPI")]
     [ApiController]
     public class ProductController : Controller
     {

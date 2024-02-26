@@ -7,11 +7,13 @@ namespace BlazingParon.Data
         {
             var products = new Product[]
             {
-                new Product { Name = "jTelefon", Price = 8900 },
-                new Product { Name = "jPlatta", Price = 5700 },
-                new Product { Name = "Päronklocka", Price = 11000 }
+                new Product { Name = "jTelefon", Price = 8900, Description = "En telefon som är gjord av ett företag som heter Päron" },
+                new Product { Name = "jPlatta", Price = 5700, Description = "En platta som är gjord av ett företag som heter Päron"},
+                new Product { Name = "Päronklocka", Price = 11000, Description = "En klocka som är gjord av ett företag som heter Päron"}
 
             };
+            db.Products.AddRange(products);
+            db.SaveChanges();
 
             var warehouses = new Warehouse[]
             {
@@ -19,6 +21,9 @@ namespace BlazingParon.Data
                 new Warehouse { Name = "Norrköping" },
                 new Warehouse { Name = "Frankfurt" }
             };
+            db.Warehouses.AddRange(warehouses);
+            db.SaveChanges();
+
             var inventorycounts = new InventoryCount[]
             {
                 new InventoryCount { ProductId = 1, WarehouseId = 1, Quantity = 170000 },
@@ -31,8 +36,6 @@ namespace BlazingParon.Data
                 new InventoryCount { ProductId = 2, WarehouseId = 3, Quantity = 104300 },
                 new InventoryCount { ProductId = 3, WarehouseId = 3, Quantity = 38000 }
             };
-            db.Products.AddRange(products);
-            db.Warehouses.AddRange(warehouses);
             db.InventoryCounts.AddRange(inventorycounts);
             db.SaveChanges();
         }
