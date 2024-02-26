@@ -8,6 +8,7 @@ namespace BlazingParon.Data
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<Warehouse> Warehouses { get; set; } = null!;
         public DbSet<InventoryCount> InventoryCounts { get; set; }
+        public DbSet<StockTransaction> StockTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,24 @@ namespace BlazingParon.Data
                 .HasOne<Warehouse>()
                 .WithMany()
                 .HasForeignKey(ic => ic.WarehouseId)
+                .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Warehouse
+
+            modelBuilder.Entity<StockTransaction>()
+                .HasOne<Product>()
+                .WithMany()
+                .HasForeignKey(st => st.ProductId)
+                .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Product
+
+            modelBuilder.Entity<StockTransaction>()
+                .HasOne<Warehouse>()
+                .WithMany()
+                .HasForeignKey(st => st.SendingWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Warehouse
+
+            modelBuilder.Entity<StockTransaction>()
+                .HasOne<Warehouse>()
+                .WithMany()
+                .HasForeignKey(st => st.ReceivingWarehouseId)
                 .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Warehouse
         }
     }

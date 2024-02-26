@@ -3,6 +3,7 @@ using System;
 using BlazingParon.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazingParon.Migrations
 {
     [DbContext(typeof(InventoryManagementSystemDB))]
-    partial class InventoryManagementSystemDBModelSnapshot : ModelSnapshot
+    [Migration("20240226182538_StockTransaction")]
+    partial class StockTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
