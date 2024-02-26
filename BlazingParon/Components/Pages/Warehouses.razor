@@ -1,0 +1,44 @@
+﻿@page "/warehouses"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@using BlazingParon.Models;
+
+<PageTitle>Warehouses</PageTitle>
+
+<h1>Warehouses in database</h1>
+
+@if (warehouses == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Warehouse ID</th>
+            <th>Warehouse Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var warehouse in warehouses)
+            {
+                <tr>
+                    <td>@warehouse.WarehouseId</td>
+                    <td>@warehouse.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    List<Warehouse> warehouses = new();
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await HttpClient.GetFromJsonAsync<List<Warehouse>>(NavigationManager.BaseUri + "warehousesAPI");
+    }
+
+
+}

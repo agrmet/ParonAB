@@ -1,0 +1,57 @@
+﻿@page "/inventorycount"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@using BlazingParon.Models;
+
+<PageTitle>Item quantity</PageTitle>
+
+<h1>Item quantity</h1>
+
+Represents how many items are in warehouse for a given product.
+
+@if (inventoryCounts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Warehouse</th>
+            <th>Product</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (InventoryCount inventoryCount in inventoryCounts)
+            {
+                <tr>
+                    <td>@(warehouses.TryGetValue(inventoryCount.WarehouseId, out var warehouse) ? warehouse.Name : "Unknown")
+                    </td>
+                    <td>@(products.TryGetValue(inventoryCount.ProductId, out var product) ? product.Name : "Unknown")</td>
+                    <td>@inventoryCount.Quantity</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+@code {
+    List<InventoryCount> inventoryCounts = new();
+    Dictionary<int, Product> products = new();
+    Dictionary<int, Warehouse> warehouses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        inventoryCounts = await HttpClient.GetFromJsonAsync<List<InventoryCount>>(NavigationManager.BaseUri +
+        "inventorycountAPI");
+
+        var allProducts = await HttpClient.GetFromJsonAsync<List<Product>>(NavigationManager.BaseUri + "productsAPI");
+        var allWarehouses = await HttpClient.GetFromJsonAsync<List<Warehouse>>(NavigationManager.BaseUri + "warehousesAPI");
+
+        products = allProducts?.ToDictionary(p => p.ProductId) ?? new Dictionary<int, Product>();
+        warehouses = allWarehouses?.ToDictionary(w => w.WarehouseId) ?? new Dictionary<int, Warehouse>();
+    }
+}
