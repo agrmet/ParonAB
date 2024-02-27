@@ -38,6 +38,18 @@ namespace BlazingParon.Data
             };
             db.InventoryCounts.AddRange(inventorycounts);
             db.SaveChanges();
+
+            var deliveries = new Deliveries[]
+            {
+                new Deliveries { ProductId = 1, SendingWarehouseId = 1, ReceivingWarehouseId = 2, Quantity = 30000, Date = DateTime.Parse("2021-01-01") },
+                new Deliveries { ProductId = 2, SendingWarehouseId = 1, ReceivingWarehouseId = 2, Quantity = 10000, Date = DateTime.Parse("2021-01-01") },
+                new Deliveries { ProductId = 3, SendingWarehouseId = 1, ReceivingWarehouseId = 2, Quantity = 20000, Date = DateTime.Parse("2021-01-01") },
+                new Deliveries { ProductId = 1, SendingWarehouseId = 1, ReceivingWarehouseId = 3, Quantity = 20000, Date = DateTime.Parse("2021-01-01") },
+                new Deliveries { ProductId = 2, SendingWarehouseId = 1, ReceivingWarehouseId = 3, Quantity = 10000, Date = DateTime.Parse("2021-01-01") },
+                new Deliveries { ProductId = 3, SendingWarehouseId = 1, ReceivingWarehouseId = 3, Quantity = 30000, Date = DateTime.Parse("2021-01-01") }
+            };
+            db.Deliveries.AddRange(deliveries);
+            db.SaveChanges();
         }
     }
 }
