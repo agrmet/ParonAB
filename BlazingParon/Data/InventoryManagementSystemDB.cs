@@ -8,7 +8,7 @@ namespace BlazingParon.Data
         public DbSet<Product> Products { get; set; } = null!;
         public DbSet<Warehouse> Warehouses { get; set; } = null!;
         public DbSet<InventoryCount> InventoryCounts { get; set; }
-        public DbSet<StockTransaction> StockTransactions { get; set; }
+        public DbSet<Deliveries> Deliveries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,22 +27,22 @@ namespace BlazingParon.Data
                 .HasForeignKey(ic => ic.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Warehouse
 
-            modelBuilder.Entity<StockTransaction>()
+            modelBuilder.Entity<Deliveries>()
                 .HasKey(st => new { st.ProductId, st.ReceivingWarehouseId, st.SendingWarehouseId }); // Composite key
 
-            modelBuilder.Entity<StockTransaction>()
+            modelBuilder.Entity<Deliveries>()
                 .HasOne<Product>()
                 .WithMany()
                 .HasForeignKey(st => st.ProductId)
                 .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Product
 
-            modelBuilder.Entity<StockTransaction>()
+            modelBuilder.Entity<Deliveries>()
                 .HasOne<Warehouse>()
                 .WithMany()
                 .HasForeignKey(st => st.SendingWarehouseId)
                 .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Warehouse
 
-            modelBuilder.Entity<StockTransaction>()
+            modelBuilder.Entity<Deliveries>()
                 .HasOne<Warehouse>()
                 .WithMany()
                 .HasForeignKey(st => st.ReceivingWarehouseId)

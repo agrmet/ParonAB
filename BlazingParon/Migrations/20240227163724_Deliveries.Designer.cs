@@ -11,14 +11,40 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazingParon.Migrations
 {
     [DbContext(typeof(InventoryManagementSystemDB))]
-    [Migration("20240227162051_StockTransaction")]
-    partial class StockTransaction
+    [Migration("20240227163724_Deliveries")]
+    partial class Deliveries
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+
+            modelBuilder.Entity("BlazingParon.Models.Deliveries", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReceivingWarehouseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SendingWarehouseId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ProductId", "ReceivingWarehouseId", "SendingWarehouseId");
+
+                    b.HasIndex("ReceivingWarehouseId");
+
+                    b.HasIndex("SendingWarehouseId");
+
+                    b.ToTable("Deliveries");
+                });
 
             modelBuilder.Entity("BlazingParon.Models.InventoryCount", b =>
                 {
@@ -60,35 +86,6 @@ namespace BlazingParon.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("BlazingParon.Models.StockTransaction", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ReceivingWarehouseId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("SendingWarehouseId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ProductId", "ReceivingWarehouseId", "SendingWarehouseId");
-
-                    b.HasIndex("ReceivingWarehouseId");
-
-                    b.HasIndex("SendingWarehouseId");
-
-                    b.ToTable("StockTransactions");
-                });
-
             modelBuilder.Entity("BlazingParon.Models.Warehouse", b =>
                 {
                     b.Property<int>("WarehouseId")
@@ -104,22 +101,7 @@ namespace BlazingParon.Migrations
                     b.ToTable("Warehouses");
                 });
 
-            modelBuilder.Entity("BlazingParon.Models.InventoryCount", b =>
-                {
-                    b.HasOne("BlazingParon.Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("BlazingParon.Models.Warehouse", null)
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BlazingParon.Models.StockTransaction", b =>
+            modelBuilder.Entity("BlazingParon.Models.Deliveries", b =>
                 {
                     b.HasOne("BlazingParon.Models.Product", null)
                         .WithMany()
@@ -136,6 +118,21 @@ namespace BlazingParon.Migrations
                     b.HasOne("BlazingParon.Models.Warehouse", null)
                         .WithMany()
                         .HasForeignKey("SendingWarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BlazingParon.Models.InventoryCount", b =>
+                {
+                    b.HasOne("BlazingParon.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BlazingParon.Models.Warehouse", null)
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

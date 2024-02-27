@@ -1,0 +1,19 @@
+﻿@page "/deliveries"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@using BlazingParon.Models
+
+<h3>Deliveries</h3>
+
+@code {
+    private List<Deliveries> deliveries = new List<Deliveries>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await HttpClient.GetFromJsonAsync<List<Deliveries>>("deliveriesAPI");
+        deliveries = response;
+    }
+
+}
