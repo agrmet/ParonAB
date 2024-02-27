@@ -28,7 +28,7 @@ namespace BlazingParon.Data
                 .OnDelete(DeleteBehavior.Restrict); // Enforce FK to Warehouse
 
             modelBuilder.Entity<Deliveries>()
-                .HasKey(st => new { st.ProductId, st.ReceivingWarehouseId, st.SendingWarehouseId }); // Composite key
+                .HasKey(st => new { st.DeliveryId });
 
             modelBuilder.Entity<Deliveries>()
                 .HasOne<Product>()

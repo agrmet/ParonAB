@@ -26,15 +26,9 @@ namespace BlazingParon.Data
 
             var inventorycounts = new InventoryCount[]
             {
-                new InventoryCount { ProductId = 1, WarehouseId = 1, Quantity = 170000 },
-                new InventoryCount { ProductId = 2, WarehouseId = 1, Quantity = 41500 },
-                new InventoryCount { ProductId = 3, WarehouseId = 1, Quantity = 90000 },
-                new InventoryCount { ProductId = 1, WarehouseId = 2, Quantity = 101700 },
-                new InventoryCount { ProductId = 2, WarehouseId = 2, Quantity = 72400 },
-                new InventoryCount { ProductId = 3, WarehouseId = 2, Quantity = 25000 },
-                new InventoryCount { ProductId = 1, WarehouseId = 3, Quantity = 55000 },
-                new InventoryCount { ProductId = 2, WarehouseId = 3, Quantity = 104300 },
-                new InventoryCount { ProductId = 3, WarehouseId = 3, Quantity = 38000 }
+                new InventoryCount { ProductId = 1, WarehouseId = 1, Quantity = 30000 },
+                new InventoryCount { ProductId = 2, WarehouseId = 1, Quantity = 20000 },
+                new InventoryCount { ProductId = 3, WarehouseId = 1, Quantity = 50000 },
             };
             db.InventoryCounts.AddRange(inventorycounts);
             db.SaveChanges();

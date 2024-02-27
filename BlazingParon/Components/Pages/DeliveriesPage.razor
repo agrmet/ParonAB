@@ -6,6 +6,11 @@
 @using BlazingParon.Models
 
 <h3>Deliveries</h3>
+<input type="number" @bind="deliveryIdToDelete" />
+<button class="btn btn-danger" @onclick="() => DeleteDelivery()">Delete Delivery</button>
+<p></p>
+<a href="/newdelivery" class="btn btn-primary">Add Delivery</a>
+<a href="/updatedelivery" class="btn btn-primary">Update Delivery</a>
 
 @if (deliveries == null)
 {
@@ -43,6 +48,7 @@ else
     Dictionary<int, Product> products = new();
     Dictionary<int, Warehouse> warehouses = new();
 
+    private int deliveryIdToDelete = 0;
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
@@ -62,6 +68,16 @@ else
 
     }
 
-
-
+    protected async Task DeleteDelivery()
+    {
+        var response = await HttpClient.DeleteAsync(NavigationManager.BaseUri + "deliveriesAPI/" + deliveryIdToDelete);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData();
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Error deleting delivery");
+        }
+    }
 }

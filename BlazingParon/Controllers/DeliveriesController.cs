@@ -28,28 +28,84 @@ namespace BlazingParon.Controllers
         }
 
         [HttpPost]
-        public async Task<Deliveries> AddDeliveriesAsync(Deliveries Deliveries)
+        public async Task<Deliveries> AddDeliveriesAsync(Deliveries delivery)
         {
-            _db.Deliveries.Add(Deliveries);
+            if (delivery.Quantity < 0) throw new Exception("Quantity cannot be negative");
+            AddInventory(delivery);
+            _db.Deliveries.Add(delivery);
             await _db.SaveChangesAsync();
-            return Deliveries;
+            return delivery;
         }
 
         [HttpPut]
-        public async Task<Deliveries> UpdateDeliveriesAsync(Deliveries Deliveries)
+        public async Task<Deliveries> UpdateDeliveriesAsync(Deliveries delivery)
         {
-            _db.Entry(Deliveries).State = EntityState.Modified;
+            if (delivery.Quantity < 0) throw new Exception("Quantity cannot be negative");
+            UpdateInventory(delivery);
+            _db.Entry(delivery).State = EntityState.Modified;
             await _db.SaveChangesAsync();
-            return Deliveries;
+            return delivery;
         }
 
         [HttpDelete("{ProductId}/{SendingWarehouseId}/{ReceivingWarehouseId}")]
         public async Task DeleteDeliveriesAsync(int ProductId, int SendingWarehouseId, int ReceivingWarehouseId)
         {
-            var Deliveries = await _db.Deliveries.FindAsync(ProductId, SendingWarehouseId, ReceivingWarehouseId);
-            if (Deliveries == null) return;
-            _db.Deliveries.Remove(Deliveries);
+            var delivery = await _db.Deliveries.FindAsync(ProductId, SendingWarehouseId, ReceivingWarehouseId);
+            if (delivery == null) return;
+            DeleteInventory(delivery);
+            _db.Deliveries.Remove(delivery);
             await _db.SaveChangesAsync();
+        }
+
+        private void AddInventory(Deliveries delivery)
+        {
+            var sendingWarehouse = _db.InventoryCounts.Find(delivery.ProductId, delivery.SendingWarehouseId);
+            var receivingWarehouse = _db.InventoryCounts.Find(delivery.ProductId, delivery.ReceivingWarehouseId);
+            if (delivery.Quantity > sendingWarehouse.Quantity) throw new Exception("Not enough inventory");
+            if (sendingWarehouse == null || receivingWarehouse == null) return;
+
+            sendingWarehouse.Quantity -= delivery.Quantity;
+            receivingWarehouse.Quantity += delivery.Quantity;
+
+            _db.Entry(sendingWarehouse).State = EntityState.Modified;
+            _db.Entry(receivingWarehouse).State = EntityState.Modified;
+        }
+
+        private void UpdateInventory(Deliveries delivery)
+        {
+            var oldDelivery = _db.Deliveries.Find(delivery.ProductId, delivery.SendingWarehouseId, delivery.ReceivingWarehouseId);
+            var sendingWarehouse = _db.InventoryCounts.Find(delivery.ProductId, delivery.SendingWarehouseId);
+            var receivingWarehouse = _db.InventoryCounts.Find(delivery.ProductId, delivery.ReceivingWarehouseId);
+
+            if (delivery.Quantity > oldDelivery.Quantity)
+            {
+                sendingWarehouse.Quantity -= (delivery.Quantity - oldDelivery.Quantity);
+                receivingWarehouse.Quantity += (delivery.Quantity - oldDelivery.Quantity);
+            }
+            else
+            {
+                sendingWarehouse.Quantity += (oldDelivery.Quantity - delivery.Quantity);
+                receivingWarehouse.Quantity -= (oldDelivery.Quantity - delivery.Quantity);
+            }
+            if (sendingWarehouse.Quantity < 0) throw new Exception("Not enough inventory");
+            if (sendingWarehouse == null || receivingWarehouse == null) return;
+
+            _db.Entry(sendingWarehouse).State = EntityState.Modified;
+            _db.Entry(receivingWarehouse).State = EntityState.Modified;
+        }
+
+        private void DeleteInventory(Deliveries delivery)
+        {
+            var sendingWarehouse = _db.InventoryCounts.Find(delivery.ProductId, delivery.SendingWarehouseId);
+            var receivingWarehouse = _db.InventoryCounts.Find(delivery.ProductId, delivery.ReceivingWarehouseId);
+
+            if (sendingWarehouse == null || receivingWarehouse == null) return;
+
+            sendingWarehouse.Quantity += delivery.Quantity;
+            receivingWarehouse.Quantity -= delivery.Quantity;
+
+            _db.Entry(sendingWarehouse).State = EntityState.Modified;
+            _db.Entry(receivingWarehouse).State = EntityState.Modified;
         }
 
     }

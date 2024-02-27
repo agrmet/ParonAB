@@ -3,6 +3,7 @@ namespace BlazingParon.Models
 {
     public class Deliveries
     {
+        public int DeliveryId { get; set; }
         public int SendingWarehouseId { get; set; }
         public int ReceivingWarehouseId { get; set; }
         public int ProductId { get; set; }

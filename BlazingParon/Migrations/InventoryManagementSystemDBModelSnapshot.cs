@@ -19,7 +19,17 @@ namespace BlazingParon.Migrations
 
             modelBuilder.Entity("BlazingParon.Models.Deliveries", b =>
                 {
+                    b.Property<int>("DeliveryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ReceivingWarehouseId")
@@ -28,13 +38,9 @@ namespace BlazingParon.Migrations
                     b.Property<int>("SendingWarehouseId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                    b.HasKey("DeliveryId");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ProductId", "ReceivingWarehouseId", "SendingWarehouseId");
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("ReceivingWarehouseId");
 
