@@ -1,19 +1,24 @@
-﻿@page "/warehouses"
+﻿@page "/updatewarehouse"
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
+@using BlazingParon.Models
 
-@using BlazingParon.Models;
+<h3>Update Warehouse</h3>
 
-<PageTitle>Warehouses</PageTitle>
 
-<h1>Warehouses in database</h1>
-<input type="number" @bind="warehouseIdToDelete" />
-<button class="btn btn-danger" @onclick="() => DeleteWarehouse()">Delete Warehouse</button>
+<div class="form-group">
+    <label for="ID">ID</label>
+    <input type="text" class="form-control" id="ID" placeholder="Enter Warehouse ID"
+        @bind="updatedWarehouse.WarehouseId">
+</div>
+<div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" placeholder="Enter name" @bind="updatedWarehouse.Name">
+</div>
 <p></p>
-<a href="/addwarehouse" class="btn btn-primary">Add Warehouse</a>
-<a href="/updatewarehouse" class="btn btn-primary">Update Warehouse</a>
+<button type="submit" class="btn btn-primary" @onclick="UpdateWarehouse">Update</button>
 
 @if (warehouses == null)
 {
@@ -41,7 +46,9 @@ else
 }
 
 @code {
+
     List<Warehouse> warehouses = new();
+    Warehouse updatedWarehouse = new Warehouse();
     int warehouseIdToDelete = 0;
 
     protected override async Task OnInitializedAsync()
@@ -55,18 +62,18 @@ else
         StateHasChanged();
     }
 
-    private async Task DeleteWarehouse()
+    private async Task UpdateWarehouse()
     {
-        var response = await HttpClient.DeleteAsync(NavigationManager.BaseUri + "warehousesAPI/" + warehouseIdToDelete);
+        var response = await HttpClient.PutAsJsonAsync(NavigationManager.BaseUri + "warehousesAPI/", updatedWarehouse);
         if (response.IsSuccessStatusCode)
         {
+            await JSRuntime.InvokeVoidAsync("alert", "Warehouse updated successfully");
             LoadWarehouses();
         }
         else
         {
-            JSRuntime.InvokeVoidAsync("alert", "Error deleting warehouse. Please try again.");
+            await JSRuntime.InvokeVoidAsync("alert", "Warehouse update failed");
         }
     }
-
 
 }

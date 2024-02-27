@@ -1,0 +1,35 @@
+﻿@page "/addwarehouse"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@using BlazingParon.Models
+
+<h3>Add Warehouse</h3>
+
+<div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" @bind="warehouse.Name">
+</div>
+<p></p>
+<button class="btn btn-primary" @onclick="AddWarehouse">Add</button>
+
+@code {
+
+    Warehouse warehouse = new Warehouse();
+
+    private async Task AddWarehouse()
+    {
+        var response = await HttpClient.PostAsJsonAsync(NavigationManager.BaseUri + "warehousesAPI", warehouse);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo(NavigationManager.BaseUri + "warehouses");
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            await JSRuntime.InvokeVoidAsync("alert", error);
+        }
+    }
+
+}
