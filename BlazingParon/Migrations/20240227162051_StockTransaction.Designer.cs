@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazingParon.Migrations
 {
     [DbContext(typeof(InventoryManagementSystemDB))]
-    [Migration("20240226182538_StockTransaction")]
+    [Migration("20240227162051_StockTransaction")]
     partial class StockTransaction
     {
         /// <inheritdoc />
@@ -62,20 +62,7 @@ namespace BlazingParon.Migrations
 
             modelBuilder.Entity("BlazingParon.Models.StockTransaction", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ProductId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ReceivingWarehouseId")
@@ -84,9 +71,16 @@ namespace BlazingParon.Migrations
                     b.Property<int>("SendingWarehouseId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("ProductId");
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ProductId", "ReceivingWarehouseId", "SendingWarehouseId");
 
                     b.HasIndex("ReceivingWarehouseId");
 

@@ -15,8 +15,6 @@ namespace BlazingParon.Migrations
                 name: "StockTransactions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
                     SendingWarehouseId = table.Column<int>(type: "INTEGER", nullable: false),
                     ReceivingWarehouseId = table.Column<int>(type: "INTEGER", nullable: false),
                     ProductId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -26,7 +24,7 @@ namespace BlazingParon.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockTransactions", x => x.Id);
+                    table.PrimaryKey("PK_StockTransactions", x => new { x.ProductId, x.ReceivingWarehouseId, x.SendingWarehouseId });
                     table.ForeignKey(
                         name: "FK_StockTransactions_Products_ProductId",
                         column: x => x.ProductId,
@@ -46,11 +44,6 @@ namespace BlazingParon.Migrations
                         principalColumn: "WarehouseId",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockTransactions_ProductId",
-                table: "StockTransactions",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_StockTransactions_ReceivingWarehouseId",

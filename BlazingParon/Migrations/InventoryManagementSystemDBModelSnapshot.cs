@@ -59,20 +59,7 @@ namespace BlazingParon.Migrations
 
             modelBuilder.Entity("BlazingParon.Models.StockTransaction", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("ProductId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ReceivingWarehouseId")
@@ -81,9 +68,16 @@ namespace BlazingParon.Migrations
                     b.Property<int>("SendingWarehouseId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("ProductId");
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ProductId", "ReceivingWarehouseId", "SendingWarehouseId");
 
                     b.HasIndex("ReceivingWarehouseId");
 
