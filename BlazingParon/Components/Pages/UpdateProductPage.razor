@@ -1,0 +1,85 @@
+﻿@page "/updateproduct"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@using BlazingParon.Models
+
+<h3>Update Product</h3>
+
+
+<div class="form-group">
+    <label for="ID">ID</label>
+    <input type="text" class="form-control" id="ID" placeholder="Enter Product ID" @bind="updatedProduct.ProductId">
+</div>
+<div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" id="name" placeholder="Enter name" @bind="updatedProduct.Name">
+</div>
+<div class="form-group">
+    <label for="price">Price</label>
+    <input type="text" class="form-control" id="price" placeholder="Enter price" @bind="updatedProduct.Price">
+</div>
+<div class="form-group">
+    <label for="description">Description</label>
+    <input type="text" class="form-control" id="description" placeholder="Enter description"
+        @bind="updatedProduct.Description">
+</div>
+<p></p>
+<button type="submit" class="btn btn-primary" @onclick="UpdateProduct">Update Product</button>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+{
+    <tr>
+        <td>@product.ProductId</td>
+        <td>@product.Name</td>
+        <td>@product.Price</td>
+        <td>@product.Description</td>
+    </tr>
+}
+
+        </tbody>
+    </table>
+}
+
+@code {
+
+    Product updatedProduct = new Product();
+    List<Product> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await HttpClient.GetFromJsonAsync<List<Product>>(NavigationManager.BaseUri + "productsAPI");
+    }
+
+    private async Task UpdateProduct()
+    {
+        var response = await HttpClient.PutAsJsonAsync(NavigationManager.BaseUri + "productsAPI", updatedProduct);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo(NavigationManager.BaseUri + "products");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Error updating product");
+        }
+
+    }
+
+}

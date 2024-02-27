@@ -43,14 +43,4 @@ using (var scope = scopeFactory.CreateScope())
     }
 }
 
-// Print the database
-using (var scope = scopeFactory.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<InventoryManagementSystemDB>();
-    Console.WriteLine("Database contents:");
-    foreach (var product in db.Products)
-    {
-        Console.WriteLine($"- {product.ProductId} ({product.Name})");
-    }
-}
 app.Run();
