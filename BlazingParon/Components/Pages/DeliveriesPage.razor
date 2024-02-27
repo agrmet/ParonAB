@@ -21,6 +21,7 @@ else
     <table class="table">
     <thead>
         <tr>
+            <th>Delivery ID</th>
             <th>Product</th>
             <th>Sending Warehouse</th>
             <th>Receiving Warehouse</th>
@@ -32,6 +33,7 @@ else
         @foreach (var delivery in deliveries)
             {
                 <tr>
+                    <td>@delivery.DeliveryId</td>
                     <td>@products[delivery.ProductId].Name</td>
                     <td>@warehouses[delivery.SendingWarehouseId].Name</td>
                     <td>@warehouses[delivery.ReceivingWarehouseId].Name</td>

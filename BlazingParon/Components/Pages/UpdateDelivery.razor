@@ -1,5 +1,116 @@
-﻿<h3>UpdateDelivery</h3>
+﻿@page "/updatedelivery"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@using BlazingParon.Models
+
+<h3>Update Delivery</h3>
+
+Scroll down to see the list of deliveries.
+
+
+<div class="form-group">
+    <label for="DeliveryID">Delivery ID</label>
+    <input type="text" class="form-control" id="DeliveryID" placeholder="Enter Delivery ID" @bind="delivery.DeliveryId">
+</div>
+<div class="form-group">
+    <label for="ProductID">Product ID</label>
+    <input type="text" class="form-control" id="ProductID" placeholder="Enter Product ID" @bind="delivery.ProductId">
+</div>
+<div class="form-group">
+    <label for="Quantity">Quantity</label>
+    <input type="text" class="form-control" id="Quantity" placeholder="Enter Quantity" @bind="delivery.Quantity">
+</div>
+<div class="form-group">
+    <label for="Date">Delivery Date</label>
+    <input type="date" class="form-control" id="Date" @bind="delivery.Date">
+</div>
+<div class="form-group">
+    <label for="SendingWarehouseId">Sending Warehouse ID</label>
+    <input type="text" class="form-control" id="SendingWarehouseId" placeholder="Enter Sending Warehouse ID"
+        @bind="delivery.SendingWarehouseId">
+</div>
+<div class="form-group">
+    <label for="ReceivingWarehouseId">Receiving Warehouse ID</label>
+    <input type="text" class="form-control" id="ReceivingWarehouseId" placeholder="Enter Receiving Warehouse ID"
+        @bind="delivery.ReceivingWarehouseId">
+</div>
+<p></p>
+<button type="submit" class="btn btn-primary" @onclick="Update">Update Delivery</button>
+
+
+@if (deliveries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Delivery ID</th>
+            <th>Product</th>
+            <th>Sending Warehouse</th>
+            <th>Receiving Warehouse</th>
+            <th>Quantity</th>
+            <th>Delivery Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var delivery in deliveries)
+            {
+                <tr>
+                    <td>@delivery.DeliveryId</td>
+                    <td>@products[delivery.ProductId].Name</td>
+                    <td>@warehouses[delivery.SendingWarehouseId].Name</td>
+                    <td>@warehouses[delivery.ReceivingWarehouseId].Name</td>
+                    <td>@delivery.Quantity</td>
+                    <td>@delivery.Date</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 
 @code {
+    private List<Deliveries> deliveries = new List<Deliveries>();
+    Dictionary<int, Product> products = new();
+    Dictionary<int, Warehouse> warehouses = new();
+    Deliveries delivery = new Deliveries();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    protected async Task LoadData()
+    {
+        var response = await HttpClient.GetFromJsonAsync<List<Deliveries>>(NavigationManager.BaseUri + "deliveriesAPI");
+        deliveries = response;
+
+        var allProducts = await HttpClient.GetFromJsonAsync<List<Product>>(NavigationManager.BaseUri + "productsAPI");
+        var allWarehouses = await HttpClient.GetFromJsonAsync<List<Warehouse>>(NavigationManager.BaseUri + "warehousesAPI");
+
+        products = allProducts?.ToDictionary(p => p.ProductId) ?? new Dictionary<int, Product>();
+        warehouses = allWarehouses?.ToDictionary(w => w.WarehouseId) ?? new Dictionary<int, Warehouse>();
+        StateHasChanged();
+
+    }
+
+    protected async Task Update()
+    {
+        var response = await HttpClient.PutAsJsonAsync(NavigationManager.BaseUri + "deliveriesAPI", delivery);
+        if (response.IsSuccessStatusCode)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Delivery updated successfully");
+            await LoadData();
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Error updating delivery");
+        }
+    }
 
 }

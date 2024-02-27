@@ -1,5 +1,100 @@
-﻿<h3>NewDelivery</h3>
+﻿@page "/newdelivery"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+@using BlazingParon.Models
+
+<h3>New Delivery</h3>
+
+Scroll down to find tables of products and warehouses to help you fill in the form.
+
+<div class="form-group">
+    <label for="ProductID">Product ID</label>
+    <input type="text" class="form-control" id="ProductID" placeholder="Enter Product ID" @bind="delivery.ProductId">
+</div>
+<div class="form-group">
+    <label for="Quantity">Quantity</label>
+    <input type="text" class="form-control" id="Quantity" placeholder="Enter Quantity" @bind="delivery.Quantity">
+</div>
+<div class="form-group">
+    <label for="Date">Delivery Date</label>
+    <input type="date" class="form-control" id="Date" @bind="delivery.Date">
+</div>
+<div class="form-group">
+    <label for="SendingWarehouseId">Sending Warehouse ID</label>
+    <input type="text" class="form-control" id="SendingWarehouseId" placeholder="Enter Sending Warehouse ID"
+        @bind="delivery.SendingWarehouseId">
+</div>
+<div class="form-group">
+    <label for="ReceivingWarehouseId">Receiving Warehouse ID</label>
+    <input type="text" class="form-control" id="ReceivingWarehouseId" placeholder="Enter Receiving Warehouse ID"
+        @bind="delivery.ReceivingWarehouseId">
+</div>
+<p></p>
+<button type="submit" class="btn btn-primary" @onclick="Save">Add Delivery</button>
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Warehouse ID</th>
+            <th>Warehouse Name</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Quanitty</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inventory in inventoryCounts)
+            {
+                <tr>
+                    <td>@inventory.WarehouseId</td>
+                    <td>@warehouses[inventory.WarehouseId].Name</td>
+                    <td>@inventory.ProductId</td>
+                    <td>@products[inventory.ProductId].Name</td>
+                    <td>@inventory.Quantity</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
 
 @code {
+    Deliveries delivery = new Deliveries();
+
+    Dictionary<int, Product> products = new();
+    Dictionary<int, Warehouse> warehouses = new();
+    List<InventoryCount> inventoryCounts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allProducts = await HttpClient.GetFromJsonAsync<List<Product>>(NavigationManager.BaseUri + "productsAPI");
+        var allWarehouses = await HttpClient.GetFromJsonAsync<List<Warehouse>>(NavigationManager.BaseUri + "warehousesAPI");
+
+        products = allProducts?.ToDictionary(p => p.ProductId) ?? new Dictionary<int, Product>();
+        warehouses = allWarehouses?.ToDictionary(w => w.WarehouseId) ?? new Dictionary<int, Warehouse>();
+        inventoryCounts = await HttpClient.GetFromJsonAsync<List<InventoryCount>>(NavigationManager.BaseUri +
+        "inventorycountAPI");
+    }
+
+    private async Task Save()
+    {
+        var response = await HttpClient.PostAsJsonAsync(NavigationManager.BaseUri + "deliveriesAPI", delivery);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo(NavigationManager.BaseUri + "deliveries");
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Error adding delivery");
+        }
+    }
 
 }

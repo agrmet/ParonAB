@@ -29,20 +29,14 @@ namespace BlazingParon.Data
                 new InventoryCount { ProductId = 1, WarehouseId = 1, Quantity = 30000 },
                 new InventoryCount { ProductId = 2, WarehouseId = 1, Quantity = 20000 },
                 new InventoryCount { ProductId = 3, WarehouseId = 1, Quantity = 50000 },
+                new InventoryCount { ProductId = 1, WarehouseId = 2, Quantity = 80000 },
+                new InventoryCount { ProductId = 2, WarehouseId = 2, Quantity = 10000 },
+                new InventoryCount { ProductId = 3, WarehouseId = 2, Quantity = 30000 },
+                new InventoryCount { ProductId = 1, WarehouseId = 3, Quantity = 10000 },
+                new InventoryCount { ProductId = 2, WarehouseId = 3, Quantity = 90000 },
+                new InventoryCount { ProductId = 3, WarehouseId = 3, Quantity = 60000 }
             };
             db.InventoryCounts.AddRange(inventorycounts);
-            db.SaveChanges();
-
-            var deliveries = new Deliveries[]
-            {
-                new Deliveries { ProductId = 1, SendingWarehouseId = 1, ReceivingWarehouseId = 2, Quantity = 30000, Date = DateTime.Parse("2021-01-01") },
-                new Deliveries { ProductId = 2, SendingWarehouseId = 1, ReceivingWarehouseId = 2, Quantity = 10000, Date = DateTime.Parse("2021-01-01") },
-                new Deliveries { ProductId = 3, SendingWarehouseId = 1, ReceivingWarehouseId = 2, Quantity = 20000, Date = DateTime.Parse("2021-01-01") },
-                new Deliveries { ProductId = 1, SendingWarehouseId = 1, ReceivingWarehouseId = 3, Quantity = 20000, Date = DateTime.Parse("2021-01-01") },
-                new Deliveries { ProductId = 2, SendingWarehouseId = 1, ReceivingWarehouseId = 3, Quantity = 10000, Date = DateTime.Parse("2021-01-01") },
-                new Deliveries { ProductId = 3, SendingWarehouseId = 1, ReceivingWarehouseId = 3, Quantity = 30000, Date = DateTime.Parse("2021-01-01") }
-            };
-            db.Deliveries.AddRange(deliveries);
             db.SaveChanges();
         }
     }
